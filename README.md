@@ -7,7 +7,7 @@ Config keys can be used to cause other php files to be executed. Be careful and 
 ## Install
 
 ```sh
-composer require exan/config
+composer require tnapf/config
 ```
 
 ## Usage
