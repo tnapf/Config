@@ -29,7 +29,7 @@ class Config
      */
     private function getByKeyPath(array $key)
     {
-        $file = $this->directory.'/'.$key[0].'.php';
+        $file = sprintf('%s/%s.php', $this->directory, $key[0]);
 
         if (!file_exists($file)) {
             return null;
@@ -38,7 +38,7 @@ class Config
         $data = include $file;
 
         if (!is_array($data)) {
-            throw new InvalidConfigException('Config at '.$file.' should return array');
+            throw new InvalidConfigException(sprintf('Config at %s should return array', $file));
         }
 
         array_shift($key);
