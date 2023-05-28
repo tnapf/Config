@@ -31,7 +31,7 @@ return [
 
 # src/index.php
 
-$config = new Exan\Config\Config(__DIR__ . '/config');
+$config = new Tnapf\Config\Config(__DIR__ . '/config');
 
 $config->get('database.host', 'my-default-value'); // 'localhost'
 ```
