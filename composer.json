@@ -17,7 +17,7 @@
     "fakerphp/faker": "^1.21",
     "friendsofphp/php-cs-fixer": "^3.16",
     "jetbrains/phpstorm-attributes": "^1.0",
-    "phpunit/phpunit": "^10.1",
+    "phpunit/phpunit": "^9.6",
     "roave/security-advisories": "dev-latest"
   },
   "autoload": {
