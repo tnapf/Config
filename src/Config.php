@@ -59,6 +59,7 @@ class Config
                 if (!is_array($data)) {
                     throw new InvalidConfigException(sprintf('Config at %s should return array', $filepath));
                 }
+
                 return $data;
             };
         }
