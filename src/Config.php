@@ -5,6 +5,7 @@ namespace Tnapf\Config;
 use Tnapf\Config\Exceptions\InvalidConfigException;
 
 use function is_array;
+use function is_file;
 use function sprintf;
 
 class Config
@@ -34,8 +35,8 @@ class Config
     {
         $subDirectory = array_shift($key);
 
-        $file = realpath("{$this->directory}/{$subDirectory}.php");
-        if (!$file) {
+        $file = sprintf('%s/%s.php', $this->directory, $subDirectory);
+        if (!is_file($file)) {
             return null;
         }
 
