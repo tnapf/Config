@@ -21,7 +21,7 @@ class Config
      */
     public function get(string $key, mixed $default = null): mixed
     {
-        $keyPath = array_filter(explode('.', $key), static fn(string $part): bool => $part !== '');
+        $keyPath = array_filter(explode('.', $key), static fn (string $part): bool => $part !== '');
 
         if (empty($keyPath)) {
             return $default;
