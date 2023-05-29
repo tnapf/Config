@@ -8,6 +8,8 @@ use function is_array;
 use function is_file;
 use function sprintf;
 
+use const DIRECTORY_SEPARATOR;
+
 class Config
 {
     public function __construct(private readonly string $directory)
@@ -19,7 +21,7 @@ class Config
      */
     public function get(string $key, mixed $default = null): mixed
     {
-        $keyPath = array_filter(explode('.', $key), static fn(string $part): bool => (bool)strlen($part));
+        $keyPath = array_filter(explode('.', $key), static fn(string $part): bool => $part !== '');
 
         if (empty($keyPath)) {
             return $default;
@@ -33,9 +35,7 @@ class Config
      */
     private function getByKeyPath(array $key): mixed
     {
-        $subDirectory = array_shift($key);
-
-        $file = sprintf('%s/%s.php', $this->directory, $subDirectory);
+        $file = $this->directory . DIRECTORY_SEPARATOR . $key[0] . '.php';
         if (!is_file($file)) {
             return null;
         }
@@ -44,6 +44,8 @@ class Config
         if (!is_array($data)) {
             throw new InvalidConfigException(sprintf('Config at %s should return array', $file));
         }
+
+        array_shift($key);
 
         foreach ($key as $part) {
             if (!isset($data[$part])) {
