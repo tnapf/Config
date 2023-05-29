@@ -4,12 +4,6 @@ namespace Tnapf\Config;
 
 use Tnapf\Config\Exceptions\InvalidConfigException;
 
-use function is_array;
-use function is_file;
-use function sprintf;
-
-use const DIRECTORY_SEPARATOR;
-
 class Config
 {
     public function __construct(private readonly string $directory)
