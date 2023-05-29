@@ -13,7 +13,7 @@ class ConfigTest extends TestCase
      */
     public function testItRetrievesConfigurations(string $key, mixed $expected)
     {
-        $config = new Config(__DIR__.'/config');
+        $config = new Config(__DIR__ . '/config');
 
         $this->assertEquals(
             $expected,
@@ -51,7 +51,7 @@ class ConfigTest extends TestCase
 
     public function testItThrowsAnErrorIfAConfigFileWasInvalid()
     {
-        $config = new Config(__DIR__.'/config');
+        $config = new Config(__DIR__ . '/config');
 
         $this->expectException(InvalidConfigException::class);
 
@@ -63,7 +63,7 @@ class ConfigTest extends TestCase
      */
     public function testItReturnsDefault(string $key)
     {
-        $config = new Config(__DIR__.'/config');
+        $config = new Config(__DIR__ . '/config');
 
         $this->assertEquals(
             '::default::',
