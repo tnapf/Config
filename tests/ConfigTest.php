@@ -85,16 +85,4 @@ class ConfigTest extends TestCase
             ],
         ];
     }
-
-    public function testIfCachePersistsAfterContentChange(): void
-    {
-        $cfg = new Config(__DIR__.'/config', true);
-
-        $snapshot = file_get_contents(__DIR__.'/config/test-config.php');
-        $value = $cfg->get('test-config.two-levels.deep');
-
-        file_put_contents(__DIR__.'/config/test-config.php', '');
-        $this->assertSame($value, $cfg->get('test-config.two-levels.deep'));
-        file_put_contents(__DIR__.'/config/test-config.php', $snapshot);
-    }
 }

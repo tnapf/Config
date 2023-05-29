@@ -4,11 +4,12 @@ namespace Tnapf\Config;
 
 use Tnapf\Config\Exceptions\InvalidConfigException;
 
+use function is_array;
+use function sprintf;
+
 class Config
 {
-    private array $cache = [];
-
-    public function __construct(private readonly string $directory, private readonly bool $useCache = false)
+    public function __construct(private readonly string $directory)
     {
     }
 
@@ -17,7 +18,7 @@ class Config
      */
     public function get(string $key, mixed $default = null): mixed
     {
-        $keyPath = array_filter(explode('.', $key), static fn (string $part): bool => (bool)strlen($part));
+        $keyPath = array_filter(explode('.', $key), static fn(string $part): bool => (bool)strlen($part));
 
         if (empty($keyPath)) {
             return $default;
@@ -38,7 +39,11 @@ class Config
             return null;
         }
 
-        $data = $this->load($file);
+        $data = include $file;
+        if (!is_array($data)) {
+            throw new InvalidConfigException(sprintf('Config at %s should return array', $file));
+        }
+
         foreach ($key as $part) {
             if (!isset($data[$part])) {
                 return null;
@@ -47,31 +52,5 @@ class Config
         }
 
         return $data;
-    }
-
-    private function load(string $filepath): array
-    {
-        static $loader;
-        if (empty($loader)) {
-            // Removes $this context from included file.
-            $loader = static function (string $filepath): array {
-                $data = include $filepath;
-                if (!is_array($data)) {
-                    throw new InvalidConfigException(sprintf('Config at %s should return array', $filepath));
-                }
-
-                return $data;
-            };
-        }
-
-        if (!$this->useCache) {
-            return $loader($filepath);
-        }
-
-        if (isset($this->cache[$filepath])) {
-            return $this->cache[$filepath];
-        }
-
-        return $this->cache[$filepath] = $loader($filepath);
     }
 }
