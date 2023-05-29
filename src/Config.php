@@ -6,7 +6,9 @@ use Tnapf\Config\Exceptions\InvalidConfigException;
 
 class Config
 {
-    public function __construct(private readonly string $directory)
+    private array $cache = [];
+
+    public function __construct(private readonly string $directory, private readonly bool $useCache = false)
     {
     }
 
@@ -15,9 +17,9 @@ class Config
      */
     public function get(string $key, mixed $default = null): mixed
     {
-        $keyPath = array_filter(explode('.', $key), fn (string $subKey) => $subKey !== '');
+        $keyPath = array_filter(explode('.', $key), static fn (string $part): bool => (bool)strlen($part));
 
-        if (!count($keyPath)) {
+        if (empty($keyPath)) {
             return $default;
         }
 
@@ -27,40 +29,48 @@ class Config
     /**
      * @throws InvalidConfigException
      */
-    private function getByKeyPath(array $key)
+    private function getByKeyPath(array $key): mixed
     {
-        $file = sprintf('%s/%s.php', $this->directory, $key[0]);
+        $subDirectory = array_shift($key);
 
-        if (!file_exists($file)) {
+        $file = realpath("{$this->directory}/{$subDirectory}.php");
+        if (!$file) {
             return null;
         }
 
-        $data = include $file;
-
-        if (!is_array($data)) {
-            throw new InvalidConfigException(sprintf('Config at %s should return array', $file));
+        $data = $this->load($file);
+        foreach ($key as $part) {
+            if (!isset($data[$part])) {
+                return null;
+            }
+            $data = $data[$part];
         }
 
-        array_shift($key);
-
-        return $this->getFromArray($key, $data);
+        return $data;
     }
 
-    private function getFromArray(array $key, array $data): mixed
+    private function load(string $filepath): array
     {
-        if (!count($key)) {
-            return $data;
+        static $loader;
+        if (empty($loader)) {
+            // Removes $this context from included file.
+            $loader = static function (string $filepath): array {
+                $data = include $filepath;
+                if (!is_array($data)) {
+                    throw new InvalidConfigException(sprintf('Config at %s should return array', $filepath));
+                }
+                return $data;
+            };
         }
 
-        $newData = $data[array_shift($key)] ?? null;
-
-        if (!count($key)) {
-            return $newData;
+        if (!$this->useCache) {
+            return $loader($filepath);
         }
 
-        return $this->getFromArray(
-            $key,
-            $newData
-        );
+        if (isset($this->cache[$filepath])) {
+            return $this->cache[$filepath];
+        }
+
+        return $this->cache[$filepath] = $loader($filepath);
     }
 }
