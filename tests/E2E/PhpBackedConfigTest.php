@@ -1,36 +1,20 @@
 <?php
 
-namespace Tnapf\Config\Test;
+namespace Tnapf\Config\Test\E2E;
 
-use Mockery;
-use Mockery\MockInterface;
 use Tnapf\Config\Config;
 use Tnapf\Config\Exceptions\InvalidConfigException;
 use PHPUnit\Framework\TestCase;
-use Tnapf\Config\ConfigProvider\ConfigProvider;
+use Tnapf\Config\ConfigProvider\PhpBackedConfigProvider;
 
-class ConfigTest extends TestCase
+class PhpBackedConfigTest extends TestCase
 {
     /**
      * @dataProvider configProvider
      */
     public function testItRetrievesConfigurations(string $key, mixed $expected)
     {
-        /** @var ConfigProvider&MockInterface */
-        $configProvider = Mockery::mock(ConfigProvider::class);
-        $configProvider
-            ->expects()
-            ->get()
-            ->with('test-config')
-            ->andReturns([
-                'simple' => '::simple::',
-                'two-levels' => [
-                    'deep' => '::two-levels-deep::',
-                ],
-                'int' => 1,
-            ]);
-
-        $config = new Config($configProvider);
+        $config = new Config(new PhpBackedConfigProvider(__DIR__ . '/config'));
 
         $this->assertEquals(
             $expected,
@@ -66,17 +50,9 @@ class ConfigTest extends TestCase
         ];
     }
 
-    public function testItThrowsAnErrorIfAConfigProviderReturnsNonArrayForMultiLevelKeys()
+    public function testItThrowsAnErrorIfAConfigFileWasInvalid()
     {
-        /** @var ConfigProvider&MockInterface */
-        $configProvider = Mockery::mock(ConfigProvider::class);
-        $configProvider
-            ->expects()
-            ->get()
-            ->with('invalid-config')
-            ->andReturns('This is certainly not an array');
-
-        $config = new Config($configProvider);
+        $config = new Config(new PhpBackedConfigProvider(__DIR__ . '/config'));
 
         $this->expectException(InvalidConfigException::class);
 
@@ -86,17 +62,9 @@ class ConfigTest extends TestCase
     /**
      * @dataProvider returnsDefaultProvider
      */
-    public function testItReturnsDefault(string $key, mixed $providerReturn)
+    public function testItReturnsDefault(string $key)
     {
-        /** @var ConfigProvider&MockInterface */
-        $configProvider = Mockery::mock(ConfigProvider::class);
-        $configProvider
-            ->expects()
-            ->get()
-            ->withAnyArgs()
-            ->andReturns($providerReturn);
-
-        $config = new Config($configProvider);
+        $config = new Config(new PhpBackedConfigProvider(__DIR__ . '/config'));
 
         $this->assertEquals(
             '::default::',
@@ -109,15 +77,12 @@ class ConfigTest extends TestCase
         return [
             'Empty key' => [
                 'key' => '',
-                'providerReturn' => null,
             ],
             'Non-existant file' => [
                 'key' => 'doesnt-exist',
-                'providerReturn' => null,
             ],
             'Key not found' => [
                 'key' => 'test-config.doesnt-exist',
-                'providerReturn' => ['something-else' => 'cheese'],
             ],
         ];
     }

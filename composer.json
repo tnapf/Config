@@ -15,7 +15,8 @@
   "require-dev": {
     "ergebnis/composer-normalize": "^2.31",
     "friendsofphp/php-cs-fixer": "^3.16",
-    "phpunit/phpunit": "^9.6",
+    "mockery/mockery": "^1.5",
+    "phpunit/phpunit": "^10.0",
     "roave/security-advisories": "dev-latest"
   },
   "autoload": {
