@@ -98,7 +98,7 @@ class ConfigTest extends TestCase
 
         $config = new Config($configProvider);
 
-        $this->assertEquals(
+        $this->assertSame(
             '::default::',
             $config->get($key, '::default::'),
         );

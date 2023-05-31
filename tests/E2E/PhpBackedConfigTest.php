@@ -16,7 +16,7 @@ class PhpBackedConfigTest extends TestCase
     {
         $config = new Config(new PhpBackedConfigProvider(__DIR__ . '/config'));
 
-        $this->assertEquals(
+        $this->assertSame(
             $expected,
             $config->get($key),
         );
@@ -66,7 +66,7 @@ class PhpBackedConfigTest extends TestCase
     {
         $config = new Config(new PhpBackedConfigProvider(__DIR__ . '/config'));
 
-        $this->assertEquals(
+        $this->assertSame(
             '::default::',
             $config->get($key, '::default::'),
         );
