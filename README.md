@@ -31,7 +31,9 @@ return [
 
 # src/index.php
 
-$config = new Tnapf\Config\Config(__DIR__ . '/config');
+$config = new Tnapf\Config\Config(
+    new \Tnapf\Config\ConfigProvider\PhpBackedConfigProvider(__DIR__ . '/config')
+);
 
 $config->get('database.host', 'my-default-value'); // 'localhost'
 ```
