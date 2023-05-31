@@ -34,7 +34,7 @@ class Config
         $data = $this->configProvider->get($providerKey);
 
         if (!empty($key) && !is_array($data) && !is_null($data)) {
-            throw new InvalidConfigException(sprintf('Expected array for provider key', $providerKey));
+            throw new InvalidConfigException(sprintf('Expected array for provider key %s', $providerKey));
         }
 
         foreach ($key as $part) {

@@ -2,6 +2,8 @@
 
 namespace Tnapf\Config\ConfigProvider;
 
+use Tnapf\Config\Exceptions\InvalidConfigException;
+
 interface ConfigProvider
 {
     /**

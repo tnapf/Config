@@ -32,7 +32,7 @@ class ConfigTest extends TestCase
 
         $config = new Config($configProvider);
 
-        $this->assertEquals(
+        $this->assertSame(
             $expected,
             $config->get($key),
         );
