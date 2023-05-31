@@ -15,9 +15,9 @@ class Config
      */
     public function get(string $key, mixed $default = null): mixed
     {
-        $keyPath = array_filter(explode('.', $key), fn (string $subKey) => $subKey !== '');
+        $keyPath = array_filter(explode('.', $key), static fn (string $part): bool => $part !== '');
 
-        if (!count($keyPath)) {
+        if (empty($keyPath)) {
             return $default;
         }
 
@@ -27,40 +27,27 @@ class Config
     /**
      * @throws InvalidConfigException
      */
-    private function getByKeyPath(array $key)
+    private function getByKeyPath(array $key): mixed
     {
-        $file = sprintf('%s/%s.php', $this->directory, $key[0]);
-
-        if (!file_exists($file)) {
+        $file = $this->directory . DIRECTORY_SEPARATOR . $key[0] . '.php';
+        if (!is_file($file)) {
             return null;
         }
 
         $data = include $file;
-
         if (!is_array($data)) {
             throw new InvalidConfigException(sprintf('Config at %s should return array', $file));
         }
 
         array_shift($key);
 
-        return $this->getFromArray($key, $data);
-    }
-
-    private function getFromArray(array $key, array $data): mixed
-    {
-        if (!count($key)) {
-            return $data;
+        foreach ($key as $part) {
+            if (!isset($data[$part])) {
+                return null;
+            }
+            $data = $data[$part];
         }
 
-        $newData = $data[array_shift($key)] ?? null;
-
-        if (!count($key)) {
-            return $newData;
-        }
-
-        return $this->getFromArray(
-            $key,
-            $newData
-        );
+        return $data;
     }
 }
