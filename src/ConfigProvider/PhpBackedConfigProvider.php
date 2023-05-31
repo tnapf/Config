@@ -10,7 +10,7 @@ class PhpBackedConfigProvider implements ConfigProvider
     {
     }
 
-    public function get(string $key): mixed
+    public function get(string $key): ?array
     {
         $file = $this->directory . DIRECTORY_SEPARATOR . $key . '.php';
         if (!is_file($file)) {
