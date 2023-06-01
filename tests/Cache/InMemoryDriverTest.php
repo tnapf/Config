@@ -4,7 +4,7 @@ namespace Tnapf\Config\Test\Cache;
 
 use PHPUnit\Framework\TestCase;
 use Tnapf\Config\Cache\InMemoryDriver;
-use Tnapf\Config\Cache\InvalidCacheKeyException;
+use Tnapf\Config\Exceptions\InvalidCacheKeyException;
 
 class InMemoryDriverTest extends TestCase
 {

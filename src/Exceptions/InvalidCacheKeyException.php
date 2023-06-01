@@ -1,6 +1,6 @@
 <?php
 
-namespace Tnapf\Config\Cache;
+namespace Tnapf\Config\Exceptions;
 
 use Exception;
 use Psr\SimpleCache\InvalidArgumentException;

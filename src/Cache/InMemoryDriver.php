@@ -4,6 +4,7 @@ namespace Tnapf\Config\Cache;
 
 use DateInterval;
 use Psr\SimpleCache\CacheInterface;
+use Tnapf\Config\Exceptions\InvalidCacheKeyException;
 
 class InMemoryDriver implements CacheInterface
 {
