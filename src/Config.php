@@ -2,11 +2,12 @@
 
 namespace Tnapf\Config;
 
+use Tnapf\Config\ConfigProvider\ConfigProvider;
 use Tnapf\Config\Exceptions\InvalidConfigException;
 
 class Config
 {
-    public function __construct(private readonly string $directory)
+    public function __construct(private readonly ConfigProvider $configProvider)
     {
     }
 
@@ -29,17 +30,12 @@ class Config
      */
     private function getByKeyPath(array $key): mixed
     {
-        $file = $this->directory . DIRECTORY_SEPARATOR . $key[0] . '.php';
-        if (!is_file($file)) {
-            return null;
-        }
+        $providerKey = array_shift($key);
+        $data = $this->configProvider->get($providerKey);
 
-        $data = include $file;
-        if (!is_array($data)) {
-            throw new InvalidConfigException(sprintf('Config at %s should return array', $file));
+        if (!empty($key) && !is_array($data) && !is_null($data)) {
+            throw new InvalidConfigException(sprintf('Expected array for provider key %s', $providerKey));
         }
-
-        array_shift($key);
 
         foreach ($key as $part) {
             if (!isset($data[$part])) {
