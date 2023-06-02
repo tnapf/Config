@@ -95,28 +95,28 @@ class InMemoryDriverTest extends TestCase
     {
         return [
             '{' => [
-                'invalidKey' => '{'
+                'invalidKey' => '{',
             ],
             '}' => [
-                'invalidKey' => '}'
+                'invalidKey' => '}',
             ],
             '(' => [
-                'invalidKey' => '('
+                'invalidKey' => '(',
             ],
             ')' => [
-                'invalidKey' => ')'
+                'invalidKey' => ')',
             ],
             '/' => [
-                'invalidKey' => '/'
+                'invalidKey' => '/',
             ],
             '\\' => [
-                'invalidKey' => '\\'
+                'invalidKey' => '\\',
             ],
             '@' => [
-                'invalidKey' => '@'
+                'invalidKey' => '@',
             ],
             ':' => [
-                'invalidKey' => ':'
+                'invalidKey' => ':',
             ],
         ];
     }
