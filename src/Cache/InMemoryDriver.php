@@ -12,7 +12,7 @@ class InMemoryDriver implements CacheInterface
     private array $storage = [];
 
     /**
-     * @throws InvalidArgumentException
+     * @throws InvalidCacheKeyException
      */
     public function get(string $key, mixed $default = null): mixed
     {
@@ -51,7 +51,7 @@ class InMemoryDriver implements CacheInterface
     /**
      * @param string[] $keys
      *
-     * @throws InvalidArgumentException
+     * @throws InvalidCacheKeyException
      *
      * @return iterable<string, mixed>
      */
@@ -66,7 +66,7 @@ class InMemoryDriver implements CacheInterface
     }
 
     /**
-     * @throws InvalidArgumentException
+     * @throws InvalidCacheKeyException
      */
     public function setMultiple(iterable $values, DateInterval|int|null $ttl = null): bool
     {
@@ -78,7 +78,7 @@ class InMemoryDriver implements CacheInterface
     }
 
     /**
-     * @throws InvalidArgumentException
+     * @throws InvalidCacheKeyException
      */
     public function deleteMultiple(iterable $keys): bool
     {
