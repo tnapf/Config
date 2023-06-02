@@ -80,11 +80,44 @@ class InMemoryDriverTest extends TestCase
         $this->assertSame('pdo', $driver->get('driver'));
     }
 
-    public function testItThrowsWhenCacheKeyIsInvalid(): void
+    /**
+     * @dataProvider invalidKeys
+     */
+    public function testItThrowsWhenCacheKeyIsInvalid(string $invalidKey): void
     {
         $this->expectException(InvalidCacheKeyException::class);
 
         $driver = new InMemoryDriver();
-        $driver->get('{invalid}');
+        $driver->get($invalidKey);
+    }
+
+    public static function invalidKeys(): array
+    {
+        return [
+            '{' => [
+                'invalidKey' => '{'
+            ],
+            '}' => [
+                'invalidKey' => '}'
+            ],
+            '(' => [
+                'invalidKey' => '('
+            ],
+            ')' => [
+                'invalidKey' => ')'
+            ],
+            '/' => [
+                'invalidKey' => '/'
+            ],
+            '\\' => [
+                'invalidKey' => '\\'
+            ],
+            '@' => [
+                'invalidKey' => '@'
+            ],
+            ':' => [
+                'invalidKey' => ':'
+            ],
+        ];
     }
 }
