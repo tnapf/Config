@@ -29,7 +29,7 @@ class CachedConfigProvider implements ConfigProvider
 
             return $this->cache->get($key);
         } catch (InvalidArgumentException $e) {
-            throw new InvalidConfigException(sprintf('Config key %s is invalid', $key), 0, $e);
+            throw new InvalidConfigException(sprintf('Config key %s is invalid', $key), previous: $e);
         }
     }
 }
