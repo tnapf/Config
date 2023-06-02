@@ -2,7 +2,6 @@
 
 namespace Tnapf\Config\Test\E2E;
 
-use PHPUnit\Framework\TestCase;
 use Tnapf\Config\Cache\InMemoryDriver;
 use Tnapf\Config\ConfigProvider\CachedConfigProvider;
 use Tnapf\Config\ConfigProvider\ConfigProvider;
