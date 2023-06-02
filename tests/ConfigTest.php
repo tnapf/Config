@@ -3,13 +3,13 @@
 namespace Tnapf\Config\Test;
 
 use Mockery;
+use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Mockery\MockInterface;
 use Tnapf\Config\Config;
 use Tnapf\Config\Exceptions\InvalidConfigException;
-use PHPUnit\Framework\TestCase;
 use Tnapf\Config\ConfigProvider\ConfigProvider;
 
-class ConfigTest extends TestCase
+class ConfigTest extends MockeryTestCase
 {
     /**
      * @dataProvider configProvider
@@ -88,7 +88,7 @@ class ConfigTest extends TestCase
      */
     public function testItReturnsDefault(string $key, mixed $providerReturn)
     {
-        /** @var ConfigProvider&MockInterface */
+        /** @var ConfigProvider&MockInterface $configProvider */
         $configProvider = Mockery::mock(ConfigProvider::class);
         $configProvider
             ->expects()
@@ -104,13 +104,22 @@ class ConfigTest extends TestCase
         );
     }
 
+    public function testItDoesNotLoadDataOnEmptyKeys()
+    {
+        /** @var ConfigProvider&MockInterface $configProvider */
+        $configProvider = Mockery::mock(ConfigProvider::class);
+        $configProvider
+            ->expects('get')
+            ->never();
+
+        $config = new Config($configProvider);
+        $value = $config->get('', 'default');
+        $this->assertSame('default', $value);
+    }
+
     public static function returnsDefaultProvider(): array
     {
         return [
-            'Empty key' => [
-                'key' => '',
-                'providerReturn' => null,
-            ],
             'Non-existant file' => [
                 'key' => 'doesnt-exist',
                 'providerReturn' => null,
