@@ -57,16 +57,16 @@ class InMemoryDriverTest extends TestCase
         $driver = new InMemoryDriver();
 
         $driver->set('host', 'localhost');
-        $expected = ['host' => 'localhost', 'user' => 'empty', 'password' => 'empty'];
+        $expected = ['host' => 'localhost', 'user' => 'empty', 'driver' => 'empty'];
 
-        $this->assertSame($expected, $driver->getMultiple(['host', 'user', 'password'], 'empty'));
+        $this->assertSame($expected, $driver->getMultiple(['host', 'user', 'driver'], 'empty'));
     }
 
     public function testItDeletesMultipleKeys(): void
     {
         $driver = new InMemoryDriver();
 
-        $driver->setMultiple(['host' => 'localhost', 'user' => 'root', 'password' => '***']);
+        $driver->setMultiple(['host' => 'localhost', 'user' => 'root', 'driver' => 'pdo']);
 
         $driver->deleteMultiple(['host', 'user']);
 
@@ -76,8 +76,8 @@ class InMemoryDriverTest extends TestCase
         $this->assertFalse($driver->has('user'));
         $this->assertNull($driver->get('user'));
 
-        $this->assertTrue($driver->has('password'));
-        $this->assertSame('***', $driver->get('password'));
+        $this->assertTrue($driver->has('driver'));
+        $this->assertSame('pdo', $driver->get('driver'));
     }
 
     public function testItThrowsWhenCacheKeyIsInvalid(): void
