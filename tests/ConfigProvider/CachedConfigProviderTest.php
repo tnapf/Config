@@ -8,10 +8,12 @@ use Mockery\MockInterface;
 use Psr\SimpleCache\CacheInterface;
 use Tnapf\Config\ConfigProvider\CachedConfigProvider;
 use Tnapf\Config\ConfigProvider\ConfigProvider;
+use Tnapf\Config\Exceptions\InvalidCacheKeyException;
+use Tnapf\Config\Exceptions\InvalidConfigException;
 
 class CachedConfigProviderTest extends MockeryTestCase
 {
-    public function testItRetrievesDataFromCache(): void
+    public function testItRetrievesDataFromCache()
     {
         /** @var ConfigProvider&MockInterface $providerMock */
         $providerMock = Mockery::mock(ConfigProvider::class);
@@ -47,5 +49,36 @@ class CachedConfigProviderTest extends MockeryTestCase
         $other = $provider->get('key');
 
         $this->assertSame($value, $other);
+    }
+
+    public function testItRethrowsOnCacheDriverFailure()
+    {
+        /** @var ConfigProvider&MockInterface $providerMock */
+        $providerMock = Mockery::mock(ConfigProvider::class);
+        /** @var CacheInterface&MockInterface $driverMock */
+        $driverMock = Mockery::mock(CacheInterface::class);
+
+        $provider = new CachedConfigProvider($providerMock, $driverMock);
+
+        $driverMock
+            ->expects('has')
+            ->once()
+            ->with('{invalid-key}')
+            ->andThrows(InvalidCacheKeyException::class);
+
+        $providerMock
+            ->expects('get')
+            ->never();
+
+        $driverMock
+            ->expects('set')
+            ->never();
+
+        $driverMock
+            ->expects('get')
+            ->never();
+
+        $this->expectException(InvalidConfigException::class);
+        $provider->get('{invalid-key}');
     }
 }

@@ -4,6 +4,8 @@ namespace Tnapf\Config\ConfigProvider;
 
 use DateInterval;
 use Psr\SimpleCache\CacheInterface;
+use Psr\SimpleCache\InvalidArgumentException;
+use Tnapf\Config\Exceptions\InvalidConfigException;
 
 class CachedConfigProvider implements ConfigProvider
 {
@@ -16,11 +18,18 @@ class CachedConfigProvider implements ConfigProvider
 
     public function get(string $key): mixed
     {
-        if (!$this->cache->has($key)) {
-            $data = $this->configProvider->get($key);
-            $this->cache->set($key, $data, $this->ttl);
-        }
+        try {
+            if (!$this->cache->has($key)) {
+                $this->cache->set(
+                    $key,
+                    $this->configProvider->get($key),
+                    $this->ttl
+                );
+            }
 
-        return $this->cache->get($key);
+            return $this->cache->get($key);
+        } catch (InvalidArgumentException $e) {
+            throw new InvalidConfigException(sprintf('Config key %s is invalid', $key), 0, $e);
+        }
     }
 }
