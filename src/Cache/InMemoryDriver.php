@@ -4,17 +4,24 @@ namespace Tnapf\Config\Cache;
 
 use DateInterval;
 use Psr\SimpleCache\CacheInterface;
+use Psr\SimpleCache\InvalidArgumentException;
 use Tnapf\Config\Exceptions\InvalidCacheKeyException;
 
 class InMemoryDriver implements CacheInterface
 {
     private array $storage = [];
 
+    /**
+     * @throws InvalidArgumentException
+     */
     public function get(string $key, mixed $default = null): mixed
     {
         return $this->has($key) ? $this->storage[$key] : $default;
     }
 
+    /**
+     * @throws InvalidCacheKeyException
+     */
     public function set(string $key, mixed $value, DateInterval|int|null $ttl = null): bool
     {
         $this->validateKey($key);
@@ -23,6 +30,9 @@ class InMemoryDriver implements CacheInterface
         return true;
     }
 
+    /**
+     * @throws InvalidCacheKeyException
+     */
     public function delete(string $key): bool
     {
         $this->validateKey($key);
@@ -38,16 +48,26 @@ class InMemoryDriver implements CacheInterface
         return true;
     }
 
+    /**
+     * @param string[] $keys
+     *
+     * @throws InvalidArgumentException
+     *
+     * @return iterable<string, mixed>
+     */
     public function getMultiple(iterable $keys, mixed $default = null): iterable
     {
         $items = [];
         foreach ($keys as $key) {
-            $items[$key] = $this->storage[$key] ?? $default;
+            $items[$key] = $this->get($key, $default);
         }
 
         return $items;
     }
 
+    /**
+     * @throws InvalidArgumentException
+     */
     public function setMultiple(iterable $values, DateInterval|int|null $ttl = null): bool
     {
         foreach ($values as $key => $value) {
@@ -57,6 +77,9 @@ class InMemoryDriver implements CacheInterface
         return true;
     }
 
+    /**
+     * @throws InvalidArgumentException
+     */
     public function deleteMultiple(iterable $keys): bool
     {
         foreach ($keys as $key) {
@@ -66,6 +89,9 @@ class InMemoryDriver implements CacheInterface
         return true;
     }
 
+    /**
+     * @throws InvalidCacheKeyException
+     */
     public function has(string $key): bool
     {
         $this->validateKey($key);
@@ -73,6 +99,9 @@ class InMemoryDriver implements CacheInterface
         return isset($this->storage[$key]) || array_key_exists($key, $this->storage);
     }
 
+    /**
+     * @throws InvalidCacheKeyException
+     */
     private function validateKey(string $key): void
     {
         if (preg_match('/[{}()\/\\\@:]/', $key)) {
