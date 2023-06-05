@@ -9,14 +9,14 @@ use Tnapf\Config\Exceptions\InvalidConfigException;
 
 abstract class ConfigTestTemplate extends TestCase
 {
-    abstract protected function createConfigProvider(): ConfigProvider;
+    abstract protected function getConfigProvider(): ConfigProvider;
 
     /**
      * @dataProvider configProvider
      */
     public function testItRetrievesConfigurations(string $key, mixed $expected)
     {
-        $config = new Config($this->createConfigProvider());
+        $config = new Config($this->getConfigProvider());
 
         $this->assertSame(
             $expected,
@@ -54,7 +54,7 @@ abstract class ConfigTestTemplate extends TestCase
 
     public function testItThrowsAnErrorIfAConfigFileWasInvalid()
     {
-        $config = new Config($this->createConfigProvider());
+        $config = new Config($this->getConfigProvider());
 
         $this->expectException(InvalidConfigException::class);
 
@@ -66,7 +66,7 @@ abstract class ConfigTestTemplate extends TestCase
      */
     public function testItReturnsDefault(string $key)
     {
-        $config = new Config($this->createConfigProvider());
+        $config = new Config($this->getConfigProvider());
 
         $this->assertSame(
             '::default::',

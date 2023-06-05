@@ -9,7 +9,7 @@ use Tnapf\Config\ConfigProvider\PhpBackedConfigProvider;
 
 class InMemoryCachedPhpBackedConfigTest extends ConfigTestTemplate
 {
-    protected function createConfigProvider(): ConfigProvider
+    protected function getConfigProvider(): ConfigProvider
     {
         return new CachedConfigProvider(
             new PhpBackedConfigProvider(__DIR__ . '/config'),

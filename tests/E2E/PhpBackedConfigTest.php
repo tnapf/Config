@@ -7,7 +7,7 @@ use Tnapf\Config\ConfigProvider\PhpBackedConfigProvider;
 
 class PhpBackedConfigTest extends ConfigTestTemplate
 {
-    protected function createConfigProvider(): ConfigProvider
+    protected function getConfigProvider(): ConfigProvider
     {
         return new PhpBackedConfigProvider(__DIR__ . '/config');
     }
